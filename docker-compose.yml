@@ -56,7 +56,7 @@ services:
       - back-tier
  
   es:
-    image: nshou/elasticsearch-kibana
+    image: sebp/elk
     container_name: es
     environment:
       - cluster.name=docker-cluster
@@ -72,13 +72,12 @@ services:
     ports:
       - 19200:9200
       - 15601:5601
+      - 15044:5044
     networks:
       - back-tier
 
 volumes:
   esdata:
-    driver: local
-  esdata2:
     driver: local
   postgres-data:
 
