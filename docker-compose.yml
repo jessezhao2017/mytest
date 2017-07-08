@@ -55,9 +55,9 @@ services:
     networks:
       - back-tier
  
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
-    container_name: elasticsearch
+  es:
+    image: nshou/elasticsearch-kibana
+    container_name: es
     environment:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
@@ -68,41 +68,12 @@ services:
         hard: -1
     mem_limit: 1g
     volumes:
-      - esdata:/usr/share/elasticsearch/data
+      - esdata:/home/elasticsearch/elasticsearch/data
     ports:
       - 19200:9200
+      - 15601:5601
     networks:
       - back-tier
-
-  elasticsearch2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
-    container_name: elasticsearch2
-    depends_on:
-      - elasticsearch
-    environment:
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - "discovery.zen.ping.unicast.hosts=elasticsearch"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    mem_limit: 1g
-    volumes:
-      - esdata2:/usr/share/elasticsearch/data
-    networks:
-      - back-tier
-  
-  kibana:
-    image: docker.elastic.co/kibana/kibana:5.5.0
-    container_name: kibana
-    depends_on:
-      - elasticsearch
-    ports:
-      - 15601:5601  
-    #environment:
-    #  - elasticsearch.url=http://es:9200
 
 volumes:
   esdata:
