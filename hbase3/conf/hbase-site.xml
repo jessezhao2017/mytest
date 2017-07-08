@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <!-- Fixes #1: Allow a client container to connect to the master container -->
+  <property>
+    <name>hbase.zookeeper.quorum</name>
+    <value>hbase-master</value>
+  </property>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>file:///data/hbase</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.property.dataDir</name>
+    <value>file:///data/hbase/zookeeper</value>
+  </property>
+</configuration>
