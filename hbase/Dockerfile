@@ -1,6 +1,4 @@
-## -*- docker-image-name: "sdotz/hbase-standalone" -*-
 FROM alpine:3.4
-MAINTAINER Stephen Dotz stephen.dotz@nytimes.com
 
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre/
 

@@ -76,18 +76,6 @@ services:
     networks:
       - back-tier
 
-  kafka:
-    image: antlypls/kafka
-    container_name: kafka
-    environment:
-      - KAFKA=localhost:9092
-      - ZOOKEEPER=localhost:2181
-    expose:
-      - 2181
-      - 9092  
-    networks:
-       - back-tier 
-
   spark-master:
     image: gettyimages/spark
     command: "bin/spark-class org.apache.spark.deploy.master.Master -h spark-master"
@@ -143,6 +131,60 @@ services:
       - ./spark/data:/tmp/data
     networks:
       - back-tier  
+
+  zookeeper:
+    image: 47deg/zookeeper
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    networks:
+      - back-tier
+
+  kafka:
+    image: 47deg/kafka
+    container_name: kafka
+    ports:
+      - 9092
+    links:
+      - zookeeper:zk
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - back-tier
+
+  opscenter:
+    image: 47deg/opscenter
+    container_name: opscenter
+    ports:
+      - 18888:8888
+    networks:
+      - back-tier  
+
+  cassandra_seed:
+    image: 47deg/cassandra
+    ports:
+      - 19042:9042
+    links:
+      - opscenter
+    container_name: cassandra_seed
+    environment:
+      - OPS_IP=opscenter
+    networks:
+      - back-tier
+
+  cassandra_slave:
+    image: 47deg/cassandra
+    container_name: cassandra_slave
+    links:
+      - opscenter
+      - cassandra_seed
+    environment:
+      - OPS_IP=opscenter
+      - SEED=cassandra_seed
+    networks:
+      - back-tier
 
 volumes:
   es-data:
